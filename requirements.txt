@@ -1,0 +1,4 @@
+tensorflow==1.15.2
+numpy==1.18.2
+matplotlib==3.2.1
+tfjs-graph-converter==0.2.0 
