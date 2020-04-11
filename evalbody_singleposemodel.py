@@ -1,3 +1,4 @@
+from PIL import Image
 import tfjs_graph_converter as tfjs
 import tensorflow as tf
 import math
@@ -160,6 +161,26 @@ plt.ylabel('y')
 plt.xlabel('x')
 plt.imshow(segmentationMask * OutputStride)
 plt.show()
+
+# Draw Segmented Output
+mask_img = Image.fromarray(segmentationMask * 255)
+mask_img = mask_img.resize(
+    (targetWidth, targetHeight), Image.LANCZOS).convert("RGB")
+mask_img = tf.keras.preprocessing.image.img_to_array(
+    mask_img, dtype=np.uint8)
+
+segmentationMask_inv = np.bitwise_not(mask_img)
+fg = np.bitwise_and(np.array(img), np.array(
+    mask_img))
+plt.title('Foreground Segmentation')
+plt.imshow(fg)
+plt.show()
+bg = np.bitwise_and(np.array(img), np.array(
+    segmentationMask_inv))
+plt.title('Background Segmentation')
+plt.imshow(bg)
+plt.show()
+
 
 # Part Heatmaps, PartOffsets,
 for i in range(partHeatmaps.shape[2]):
