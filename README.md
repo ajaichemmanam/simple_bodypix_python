@@ -4,8 +4,16 @@ A simple and minimal bodypix inference in python
 
 # Getting Started
 1. Install requirements
-2. Download tfjs models for posenet.
+2. Download tfjs models for bodypix.
+```bash
+# For example, download a ResNet50-based model to ./bodypix_resnet50_float_model-stride16
+$ ./get-model.sh bodypix/resnet50/float/model-stride16
+```
 3. Set path to models and image for inference in .py files
+```py
+imagePath = './awesome_img.jpg'
+modelPath = './bodypix_resnet50_float_model-stride16/'
+```
 4. python3 evalbody_singleposemodel.py (Image with single person)
 
 # Observed Results
