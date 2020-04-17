@@ -186,12 +186,8 @@ plt.show()
 for i in range(partHeatmaps.shape[2]):
 
     heatmap = partHeatmaps[:, :, i]  # First Heat map
-    for mx in range(mask.shape[0]):
-        for my in range(mask.shape[1]):
-            for val in range(mask.shape[2]):
-                if(not mask[mx][my][val]):
-                    heatmap[mx][my] = -1
-                    # Set portions of heatmap where person is not present in segmentation mask, set value to -1
+    heatmap[np.logical_not(tf.math.reduce_any(mask, axis=-1).numpy())] = -1 
+    # Set portions of heatmap where person is not present in segmentation mask, set value to -1																	 
 
     # SHOW HEATMAPS
 
