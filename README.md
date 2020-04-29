@@ -22,5 +22,9 @@ SINGLE POSE OUTPUT
 ![SinglePose Output](https://raw.githubusercontent.com/ajaichemmanam/simple_bodypix_python/master/assets/singlepose.png)
 ![SinglePose Part Heatmaps](https://raw.githubusercontent.com/ajaichemmanam/simple_bodypix_python/master/assets/singlepose_partheatmaps.png)
 
+# Acknowledgement
+1. https://github.com/patlevin for support functions
+2. https://github.com/likeablob for download script
+
 # Note:
 Multipose is work in progress. Pull Requests are welcome.
