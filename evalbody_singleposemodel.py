@@ -123,20 +123,32 @@ with tf.compat.v1.Session(graph=graph) as sess:
                        input_tensor: sample_image})
 print("done. {} outputs received".format(len(results)))  # should be 8 outputs
 
-print('displacement_bwd', results[0].shape)
-print('displacement_fwd', results[1].shape)
-heatmaps = np.squeeze(results[2], 0)
-print('heatmaps', heatmaps.shape)
-longoffsets = np.squeeze(results[3], 0)
-print('longoffsets', longoffsets.shape)
-offsets = np.squeeze(results[4], 0)
-print('offsets', offsets.shape)
-partHeatmaps = np.squeeze(results[5], 0)
-print('partHeatmaps', partHeatmaps.shape)
-segments = np.squeeze(results[6], 0)
-print('segments', segments.shape)
-partOffsets = np.squeeze(results[7], 0)
-print('partOffsets', partOffsets.shape)
+for idx, name in enumerate(output_tensor_names):
+    if 'displacement_bwd' in name:
+        print('displacement_bwd', results[idx].shape)
+    elif 'displacement_fwd' in name:
+        print('displacement_fwd', results[idx].shape)
+    elif 'float_heatmaps' in name:
+        heatmaps = np.squeeze(results[idx], 0)
+        print('heatmaps', heatmaps.shape)
+    elif 'float_long_offsets' in name:
+        longoffsets = np.squeeze(results[idx], 0)
+        print('longoffsets', longoffsets.shape)
+    elif 'float_short_offsets' in name:
+        offsets = np.squeeze(results[idx], 0)
+        print('offests', offsets.shape)
+    elif 'float_part_heatmaps' in name:
+        partHeatmaps = np.squeeze(results[idx], 0)
+        print('partHeatmaps', partHeatmaps.shape)
+    elif 'float_segments' in name:
+        segments = np.squeeze(results[idx], 0)
+        print('segments', segments.shape)
+    elif 'float_part_offsets' in name:
+        partOffsets = np.squeeze(results[idx], 0)
+        print('partOffsets', partOffsets.shape)
+    else:
+        print('Unknown Output Tensor', name, idx)
+
 
 # BODYPART SEGMENTATION
 partOffsetVector = []
@@ -186,8 +198,8 @@ plt.show()
 for i in range(partHeatmaps.shape[2]):
 
     heatmap = partHeatmaps[:, :, i]  # First Heat map
-    heatmap[np.logical_not(tf.math.reduce_any(mask, axis=-1).numpy())] = -1 
-    # Set portions of heatmap where person is not present in segmentation mask, set value to -1																	 
+    heatmap[np.logical_not(tf.math.reduce_any(mask, axis=-1).numpy())] = -1
+    # Set portions of heatmap where person is not present in segmentation mask, set value to -1
 
     # SHOW HEATMAPS
 
