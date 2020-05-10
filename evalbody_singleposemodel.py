@@ -1,5 +1,5 @@
 from PIL import Image
-import tfjs_graph_converter as tfjs
+from utils import load_graph_model, get_input_tensors, get_output_tensors
 import tensorflow as tf
 import math
 import matplotlib.patches as patches
@@ -67,7 +67,7 @@ PART_CHANNELS = [
 
 
 print("Loading model...", end="")
-graph = tfjs.api.load_graph_model(modelPath)  # downloaded from the link above
+graph = load_graph_model(modelPath)  # downloaded from the link above
 print("done.\nLoading sample image...", end="")
 
 
@@ -114,9 +114,9 @@ print("done.\nRunning inference...", end="")
 
 # evaluate the loaded model directly
 with tf.compat.v1.Session(graph=graph) as sess:
-    input_tensor_names = tfjs.util.get_input_tensors(graph)
+    input_tensor_names = get_input_tensors(graph)
     print(input_tensor_names)
-    output_tensor_names = tfjs.util.get_output_tensors(graph)
+    output_tensor_names = get_output_tensors(graph)
     print(output_tensor_names)
     input_tensor = graph.get_tensor_by_name(input_tensor_names[0])
     results = sess.run(output_tensor_names, feed_dict={
