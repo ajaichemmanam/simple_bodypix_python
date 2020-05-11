@@ -1,11 +1,11 @@
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import math
 from PIL import Image
 from utils import load_graph_model, get_input_tensors, get_output_tensors
 import tensorflow as tf
-import math
-import matplotlib.patches as patches
-import matplotlib.pyplot as plt
-import numpy as np
-import os
 # make tensorflow stop spamming messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = "3"
 
@@ -106,19 +106,29 @@ widthResolution = int((InputImageShape[1] - 1) / OutputStride) + 1
 heightResolution = int((InputImageShape[0] - 1) / OutputStride) + 1
 print('Resolution', widthResolution, heightResolution)
 
-# add imagenet mean - extracted from body-pix source
-m = np.array([-123.15, -115.90, -103.06])
-x = np.add(x, m)
+# Get input and output tensors
+input_tensor_names = get_input_tensors(graph)
+print(input_tensor_names)
+output_tensor_names = get_output_tensors(graph)
+print(output_tensor_names)
+input_tensor = graph.get_tensor_by_name(input_tensor_names[0])
+
+# Preprocessing Image
+# For Resnet
+if any('resnet_v1' in name for name in output_tensor_names):
+    # add imagenet mean - extracted from body-pix source
+    m = np.array([-123.15, -115.90, -103.06])
+    x = np.add(x, m)
+# For Mobilenet
+elif any('MobilenetV1' in name for name in output_tensor_names):
+    x = (x/127.5)-1
+else:
+    print('Unknown Model')
 sample_image = x[tf.newaxis, ...]
 print("done.\nRunning inference...", end="")
 
 # evaluate the loaded model directly
 with tf.compat.v1.Session(graph=graph) as sess:
-    input_tensor_names = get_input_tensors(graph)
-    print(input_tensor_names)
-    output_tensor_names = get_output_tensors(graph)
-    print(output_tensor_names)
-    input_tensor = graph.get_tensor_by_name(input_tensor_names[0])
     results = sess.run(output_tensor_names, feed_dict={
                        input_tensor: sample_image})
 print("done. {} outputs received".format(len(results)))  # should be 8 outputs
