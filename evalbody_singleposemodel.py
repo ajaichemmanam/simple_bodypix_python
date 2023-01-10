@@ -169,12 +169,12 @@ partMasks = []
 
 # Segmentation MASk
 segmentation_threshold = 0.7
+segments = tf.image.resize(segments,(targetWidth, targetHeight))
 segmentScores = tf.sigmoid(segments)
 mask = tf.math.greater(segmentScores, tf.constant(segmentation_threshold))
 print('maskshape', mask.shape)
 segmentationMask = tf.dtypes.cast(mask, tf.int32)
-segmentationMask = np.reshape(
-    segmentationMask, (segmentationMask.shape[0], segmentationMask.shape[1]))
+segmentationMask = np.squeeze(segmentationMask)
 print('maskValue', segmentationMask[:][:])
 
 plt.clf()
@@ -186,11 +186,8 @@ plt.show()
 
 # Draw Segmented Output
 mask_img = Image.fromarray(segmentationMask * 255)
-mask_img = mask_img.resize(
-    (targetWidth, targetHeight), Image.LANCZOS).convert("RGB")
 mask_img = tf.keras.preprocessing.image.img_to_array(
     mask_img, dtype=np.uint8)
-
 segmentationMask_inv = np.bitwise_not(mask_img)
 fg = np.bitwise_and(np.array(img), np.array(
     mask_img))
